@@ -253,7 +253,7 @@ namespace LostArkAction.viewModel
                             {
                                 if (accVM.isRelic == isRelic)
                                 {
-                                    result = true;
+                                    return  true;
                                 }
                             }
 
@@ -271,7 +271,7 @@ namespace LostArkAction.viewModel
                             {
                                 if (accVM.isRelic == isRelic)
                                 {
-                                    result = true;
+                                    return true;
                                 }
                             }
                         }
@@ -290,14 +290,14 @@ namespace LostArkAction.viewModel
                             {
                                 if (accVM.isRelic == isRelic)
                                 {
-                                    result = true;
+                                    return  true;
                                 }
                             }
                         }
                     }
                 }
             }
-            return result;
+            return false;
         }
         #endregion
     }

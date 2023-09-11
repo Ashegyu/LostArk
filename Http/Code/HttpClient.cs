@@ -402,7 +402,7 @@ namespace LostArkAction.Code
 
                 check = isRandom ? Accs[p].Contain(inputAccVM, true):Accs[p].Contain(inputAccVM);
 
-                if (check)
+                if (check&& isRandom)
                 {
                     if (Accs[p].Price >= inputAccVM.Price)
                     {
