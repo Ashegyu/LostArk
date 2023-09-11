@@ -400,7 +400,7 @@ namespace LostArkAction.Code
             {
                 bool check = false;
 
-                check = isRandom ? Accs[p].Contain(inputAccVM, true):Accs[p].Contain(inputAccVM);
+                check = isRandom ? Accs[p].Contain(inputAccVM, true) : false;
 
                 if (check&& isRandom)
                 {

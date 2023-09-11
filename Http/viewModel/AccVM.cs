@@ -260,23 +260,7 @@ namespace LostArkAction.viewModel
                         }
                     }
                 }
-                if (accVM.Name1 == Name2 && accVM.Name2 == Name1)
-                {
-                    if (accVM.Value1 == Value2 && accVM.Value2 == Value1)
-                    {
-                        if (accVM.PenaltyName == PenaltyName)
-                        {
-
-                            if (accVM.PenaltyValue == PenaltyValue)
-                            {
-                                if (accVM.isRelic == isRelic)
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
+                
             }
             else
             {
