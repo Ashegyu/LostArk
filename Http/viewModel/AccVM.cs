@@ -240,7 +240,6 @@ namespace LostArkAction.viewModel
         #region Method
         public bool Contain(AccVM accVM, bool ran = false)
         {
-            bool result = false;
             if (!ran)
             {
                 if (accVM.Name1 == Name1 && accVM.Name2 == Name2)
@@ -251,16 +250,14 @@ namespace LostArkAction.viewModel
                         {
                             if (accVM.PenaltyValue == PenaltyValue)
                             {
-                                if (accVM.isRelic == isRelic)
+                                if (accVM.isRelic == isRelic&&accVM.TradeAllow == TradeAllow&&accVM.Quality==Quality)
                                 {
                                     return  true;
                                 }
                             }
-
                         }
                     }
                 }
-                
             }
             else
             {

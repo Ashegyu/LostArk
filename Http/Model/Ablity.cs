@@ -28,7 +28,7 @@ namespace LostArkAction.Model
             {"초심",189 },{"극의: 체술",190 },{"충격 단련",191 },{"핸드거너",192 },{"포격 강화",193 },{"진실된 용맹",194},{"절실한 구원",195 },{"점화",293 },{"환류",294 },{"중력 수련",197 },{ "상급 소환사",198},{"넘치는 교감",199 },
             {"황후의 은총",200 },{"황제의 칙령",201 },{"전투 태세",224},{"고독한 기사",225 },{"세맥타통",256 },{ "역천지체",257},{"두 번째 동료",258 },{"죽음의 습격",259 },{"절정",276 },{"절제",277 },{"잔재된 기운",278 },{"버스트",279 },
             {"완벽한 억제",280 },{"멈출 수 없는 충동",281 },{"심판자",282 },{"축복의 오라",283 },{"아르데타인의 기술" ,284},{"진화의 유산",285 },{"갈증",286 },{"달의 소리",287},{"피스메이커",289 },{"사냥의 시간",290 },{"일격필살",291 },
-            {"오의난무",292 },{"회귀",305 },{"만개",306} ,{"질풍노도",307 },{"이슬비",308 },{"분노의 망치",196 },{"처단자",310 },{"포식자",309 },{"만월의 집행자",311 },{"그믐의 경계",312 } };
+            {"오의난무",292 },{"회귀",305 },{"만개",306} ,{"질풍노도",307 },{"이슬비",308 },{"분노의 망치",196 },{"처단자",310 },{"포식자",309 },{"만월의 집행자",311 },{"그믐의 경계",312 },{"권왕파천무",314 },{"수라의 길",315 } };
         public static Dictionary<string, string> AblityShort = new Dictionary<string, string>
         { { "원한","원한" }, { "굳지","굳은 의지"  }, {"실관", "실드 관통" },{"강령술","강령술" },{ "저받","저주받은 인형" },{"각성","각성"},{"안상","안정된 상태" },{"위모","위기 모면" },{"달저","달인의 저력" },
          { "중갑","중갑 착용" }, { "강화","강화 방패" }, {"부뼈", "부러진 뼈" },{"승부사","승부사" },{ "기대","기습의 대가" },{"마흠","마나의 흐름"},{"돌대","돌격대장" },{"약무","약자 무시" },{"정흡","정기 흡수" },{"에포","에테르 포식자" },
@@ -38,7 +38,7 @@ namespace LostArkAction.Model
             {"초심","초심" },{"체술","극의: 체술" },{"충단","충격 단련" },{"핸드","핸드거너" },{"포강","포격 강화" },{"용맹","진실된 용맹"},{"구원","절실한 구원" },{"점화","점화" },{"환류","환류" },{"중수","중력 수련" },{"상소", "상급 소환사"},{"교감","넘치는 교감" },
             {"황후","황후의 은총" },{"황제","황제의 칙령"},{"전태","전투 태세"},{"고기","고독한 기사" },{"세맥","세맥타통" },{ "역천","역천지체"},{"두동","두 번째 동료" },{"죽습","죽음의 습격" },{"절정","절정" },{"절제","절제" },{"잔재","잔재된 기운" },{"버스트","버스트" },
             {"억제","완벽한 억제" },{"충동","멈출 수 없는 충동" },{"심판자","심판자" },{"축오","축복의 오라" },{"기술","아르데타인의 기술"},{"유산","진화의 유산" },{"갈증","갈증"},{"달소","달의 소리"},{"피메","피스메이커" },{"사시","사냥의 시간" },{"일격","일격필살" },
-            {"난무","오의난무" },{"회귀","회귀" },{"만개","만개"} ,{"질풍","질풍노도" },{"이슬비","이슬비" },{"분망","분노의 망치" },{ "처단자","처단자"},{"포식자","포식자" },{"만월","만월의 집행자" },{"그믐","그믐의 경계" } };
+            {"난무","오의난무" },{"회귀","회귀" },{"만개","만개"} ,{"질풍","질풍노도" },{"이슬비","이슬비" },{"분망","분노의 망치" },{ "처단자","처단자"},{"포식자","포식자" },{"만월","만월의 집행자" },{"그믐","그믐의 경계" },{"권왕","권왕파천무" },{"수라","수라의 길" } };
         public static Dictionary<string, int> AccessoryCode = new Dictionary<string, int> { { "목걸이", 200010 }, { "반지1", 200030 }, { "반지2", 200030 }, { "귀걸이1", 200020 }, { "귀걸이2", 200020 } };
         public static int selectClass { get; set; } = 0;
         #endregion
@@ -1122,7 +1122,7 @@ namespace LostArkAction.Model
             }
             return searchAblity;
         }
-        public void SetAcc(AuctionItem auctionItem, string accName)
+        public void SetAcc(AccVM auctionItem, string accName)
         {
             bool isCheck = false;
             int value1 = -1;
@@ -1131,300 +1131,28 @@ namespace LostArkAction.Model
 
             if (accName == "목걸이")
             {
-                AccVM searchAblity = new AccVM();
-                searchAblity.Name = auctionItem.Name;
-                searchAblity.Price = (int)auctionItem.AuctionInfo.BuyPrice;
-                searchAblity.Quality = auctionItem.GradeQuality;
-                searchAblity.ImagePath = auctionItem.Icon;
-                searchAblity.TradeAllow = auctionItem.AuctionInfo.TradeAllowCount;
-                searchAblity.isRelic = auctionItem.Grade == "유물";
-                for (int i = 0; i < auctionItem.Options.Count; i++)
-                {
-                    if (auctionItem.Options[i].Type == "STAT")
-                    {
-                        if (!isCheck)
-                        {
-                            searchAblity.FirstCharaterics = auctionItem.Options[i].OptionName;
-                            searchAblity.FirstCharValue = auctionItem.Options[i].Value;
-                            isCheck = true;
-                        }
-                        else
-                        {
-                            searchAblity.Secondcharaterics = auctionItem.Options[i].OptionName;
-                            searchAblity.SecondCharValue = auctionItem.Options[i].Value;
-                            isCheck = true;
-
-                        }
-                    }
-                    else if (auctionItem.Options[i].Type == "ABILITY_ENGRAVE")
-                    {
-                        if (auctionItem.Options[i].IsPenalty)
-                        {
-                            searchAblity.PenaltyName = auctionItem.Options[i].OptionName;
-                            searchAblity.PenaltyValue = auctionItem.Options[i].Value;
-                            continue;
-                        }
-                        else
-                        {
-                            if (value1 == -1)
-                            {
-                                value1 = auctionItem.Options[i].Value;
-                                idx[0] = i;
-                            }
-                            else
-                            {
-                                value2 = auctionItem.Options[i].Value;
-                                idx[1] = i;
-                            }
-                        }
-                    }
-                }
-                if (value1 > value2)
-                {
-                    searchAblity.Value1 = value1;
-                    searchAblity.Value2 = value2;
-                    searchAblity.Name1 = auctionItem.Options[idx[0]].OptionName;
-                    searchAblity.Name2 = auctionItem.Options[idx[1]].OptionName;
-
-                }
-                else
-                {
-                    searchAblity.Value1 = value2;
-                    searchAblity.Value2 = value1;
-                    searchAblity.Name1 = auctionItem.Options[idx[1]].OptionName;
-                    searchAblity.Name2 = auctionItem.Options[idx[0]].OptionName;
-                }
-                NeckAcc.Add(searchAblity);
+                
+                NeckAcc.Add(auctionItem);
             }
             else if (accName == "반지1")
             {
-                AccVM searchAblity = new AccVM();
-                searchAblity.Name = auctionItem.Name;
-                searchAblity.Price = (int)auctionItem.AuctionInfo.BuyPrice;
-                searchAblity.Quality = auctionItem.GradeQuality;
-                searchAblity.ImagePath = auctionItem.Icon;
-                searchAblity.TradeAllow = auctionItem.AuctionInfo.TradeAllowCount;
-                searchAblity.isRelic = auctionItem.Grade == "유물";
-
-                for (int i = 0; i < auctionItem.Options.Count; i++)
-                {
-                    if (auctionItem.Options[i].Type == "STAT")
-                    {
-                        searchAblity.FirstCharaterics = auctionItem.Options[i].OptionName;
-                        searchAblity.FirstCharValue = auctionItem.Options[i].Value;
-                    }
-                    else if (auctionItem.Options[i].Type == "ABILITY_ENGRAVE")
-                    {
-                        if (auctionItem.Options[i].IsPenalty)
-                        {
-                            searchAblity.PenaltyName = auctionItem.Options[i].OptionName;
-                            searchAblity.PenaltyValue = auctionItem.Options[i].Value;
-                            continue;
-                        }
-                        else
-                        {
-                            if (value1 == -1)
-                            {
-                                value1 = auctionItem.Options[i].Value;
-                                idx[0] = i;
-                            }
-                            else
-                            {
-                                value2 = auctionItem.Options[i].Value;
-                                idx[1] = i;
-                            }
-                        }
-                    }
-                }
-                if (value1 > value2)
-                {
-                    searchAblity.Value1 = value1;
-                    searchAblity.Value2 = value2;
-                    searchAblity.Name1 = auctionItem.Options[idx[0]].OptionName;
-                    searchAblity.Name2 = auctionItem.Options[idx[1]].OptionName;
-
-                }
-                else
-                {
-                    searchAblity.Value1 = value2;
-                    searchAblity.Value2 = value1;
-                    searchAblity.Name1 = auctionItem.Options[idx[1]].OptionName;
-                    searchAblity.Name2 = auctionItem.Options[idx[0]].OptionName;
-                }
-                RingAcc1.Add(searchAblity);
+                
+                RingAcc1.Add(auctionItem);
             }
             else if (accName == "반지2")
             {
-                AccVM searchAblity = new AccVM();
-                searchAblity.Name = auctionItem.Name;
-                searchAblity.Price = (int)auctionItem.AuctionInfo.BuyPrice;
-                searchAblity.Quality = auctionItem.GradeQuality;
-                searchAblity.ImagePath = auctionItem.Icon;
-                searchAblity.TradeAllow = auctionItem.AuctionInfo.TradeAllowCount;
-                searchAblity.isRelic = auctionItem.Grade == "유물";
-
-                for (int i = 0; i < auctionItem.Options.Count; i++)
-                {
-                    if (auctionItem.Options[i].Type == "STAT")
-                    {
-                        searchAblity.FirstCharaterics = auctionItem.Options[i].OptionName;
-                        searchAblity.FirstCharValue = auctionItem.Options[i].Value;
-                    }
-                    else if (auctionItem.Options[i].Type == "ABILITY_ENGRAVE")
-                    {
-                        if (auctionItem.Options[i].IsPenalty)
-                        {
-                            searchAblity.PenaltyName = auctionItem.Options[i].OptionName;
-                            searchAblity.PenaltyValue = auctionItem.Options[i].Value;
-                            continue;
-                        }
-                        else
-                        {
-                            if (value1 == -1)
-                            {
-                                value1 = auctionItem.Options[i].Value;
-                                idx[0] = i;
-                            }
-                            else
-                            {
-                                value2 = auctionItem.Options[i].Value;
-                                idx[1] = i;
-                            }
-                        }
-                    }
-                }
-                if (value1 > value2)
-                {
-                    searchAblity.Value1 = value1;
-                    searchAblity.Value2 = value2;
-                    searchAblity.Name1 = auctionItem.Options[idx[0]].OptionName;
-                    searchAblity.Name2 = auctionItem.Options[idx[1]].OptionName;
-
-                }
-                else
-                {
-                    searchAblity.Value1 = value2;
-                    searchAblity.Value2 = value1;
-                    searchAblity.Name1 = auctionItem.Options[idx[1]].OptionName;
-                    searchAblity.Name2 = auctionItem.Options[idx[0]].OptionName;
-                }
-                RingAcc2.Add(searchAblity);
+               
+                RingAcc2.Add(auctionItem);
             }
             else if (accName == "귀걸이1")
             {
-                AccVM searchAblity = new AccVM();
-                searchAblity.Name = auctionItem.Name;
-                searchAblity.Price = (int)auctionItem.AuctionInfo.BuyPrice;
-                searchAblity.Quality = auctionItem.GradeQuality;
-                searchAblity.ImagePath = auctionItem.Icon;
-                searchAblity.TradeAllow = auctionItem.AuctionInfo.TradeAllowCount;
-                searchAblity.isRelic = auctionItem.Grade == "유물";
-
-                for (int i = 0; i < auctionItem.Options.Count; i++)
-                {
-                    if (auctionItem.Options[i].Type == "STAT")
-                    {
-                        searchAblity.FirstCharaterics = auctionItem.Options[i].OptionName;
-
-                        searchAblity.FirstCharValue = auctionItem.Options[i].Value;
-                    }
-                    else if (auctionItem.Options[i].Type == "ABILITY_ENGRAVE")
-                    {
-                        if (auctionItem.Options[i].IsPenalty)
-                        {
-                            searchAblity.PenaltyName = auctionItem.Options[i].OptionName;
-                            searchAblity.PenaltyValue = auctionItem.Options[i].Value;
-                            continue;
-                        }
-                        else
-                        {
-                            if (value1 == -1)
-                            {
-                                value1 = auctionItem.Options[i].Value;
-                                idx[0] = i;
-                            }
-                            else
-                            {
-                                value2 = auctionItem.Options[i].Value;
-                                idx[1] = i;
-                            }
-                        }
-                    }
-                }
-                if (value1 > value2)
-                {
-                    searchAblity.Value1 = value1;
-                    searchAblity.Value2 = value2;
-                    searchAblity.Name1 = auctionItem.Options[idx[0]].OptionName;
-                    searchAblity.Name2 = auctionItem.Options[idx[1]].OptionName;
-
-                }
-                else
-                {
-                    searchAblity.Value1 = value2;
-                    searchAblity.Value2 = value1;
-                    searchAblity.Name1 = auctionItem.Options[idx[1]].OptionName;
-                    searchAblity.Name2 = auctionItem.Options[idx[0]].OptionName;
-                }
-                EarAcc1.Add(searchAblity);
+               
+                EarAcc1.Add(auctionItem);
             }
             else if (accName == "귀걸이2")
             {
-                AccVM searchAblity = new AccVM();
-                searchAblity.Name = auctionItem.Name;
-                searchAblity.Price = (int)auctionItem.AuctionInfo.BuyPrice;
-                searchAblity.Quality = auctionItem.GradeQuality;
-                searchAblity.ImagePath = auctionItem.Icon;
-                searchAblity.TradeAllow = auctionItem.AuctionInfo.TradeAllowCount;
-                searchAblity.isRelic = auctionItem.Grade == "유물";
-
-                for (int i = 0; i < auctionItem.Options.Count; i++)
-                {
-                    if (auctionItem.Options[i].Type == "STAT")
-                    {
-                        searchAblity.FirstCharaterics = auctionItem.Options[i].OptionName;
-
-                        searchAblity.FirstCharValue = auctionItem.Options[i].Value;
-                    }
-                    else if (auctionItem.Options[i].Type == "ABILITY_ENGRAVE")
-                    {
-                        if (auctionItem.Options[i].IsPenalty)
-                        {
-                            searchAblity.PenaltyName = auctionItem.Options[i].OptionName;
-                            searchAblity.PenaltyValue = auctionItem.Options[i].Value;
-                            continue;
-                        }
-                        else
-                        {
-                            if (value1 == -1)
-                            {
-                                value1 = auctionItem.Options[i].Value;
-                                idx[0] = i;
-                            }
-                            else
-                            {
-                                value2 = auctionItem.Options[i].Value;
-                                idx[1] = i;
-                            }
-                        }
-                    }
-                }
-                if (value1 > value2)
-                {
-                    searchAblity.Value1 = value1;
-                    searchAblity.Value2 = value2;
-                    searchAblity.Name1 = auctionItem.Options[idx[0]].OptionName;
-                    searchAblity.Name2 = auctionItem.Options[idx[1]].OptionName;
-
-                }
-                else
-                {
-                    searchAblity.Value1 = value2;
-                    searchAblity.Value2 = value1;
-                    searchAblity.Name1 = auctionItem.Options[idx[1]].OptionName;
-                    searchAblity.Name2 = auctionItem.Options[idx[0]].OptionName;
-                }
-                EarAcc2.Add(searchAblity);
+               
+                EarAcc2.Add(auctionItem);
             }
             else
             {
