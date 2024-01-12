@@ -351,6 +351,7 @@ namespace LostArkAction.Code
                                         else if (AcceccesoryType == "반지1")
                                         {
                                             isSame = MatchingAcc((App.Current.MainWindow.DataContext as MainWinodwVM).Ablity.RingAcc1, tmp2, isRandom);
+                                          
                                         }
                                         else if (AcceccesoryType == "반지2")
                                         {
@@ -359,6 +360,7 @@ namespace LostArkAction.Code
                                         else if (AcceccesoryType == "귀걸이1")
                                         {
                                             isSame = MatchingAcc((App.Current.MainWindow.DataContext as MainWinodwVM).Ablity.EarAcc1, tmp2, isRandom);
+                                       
                                         }
                                         else if (AcceccesoryType == "귀걸이2")
                                         {
@@ -366,7 +368,7 @@ namespace LostArkAction.Code
                                         }
                                         if (!isSame)
                                         {
-                                            (App.Current.MainWindow.DataContext as MainWinodwVM).Ablity.SetAcc(tmp.Items[j], AcceccesoryType);
+                                            (App.Current.MainWindow.DataContext as MainWinodwVM).Ablity.SetAcc(tmp2, AcceccesoryType);
                                         }
                                     }
                                 }                               
@@ -400,9 +402,8 @@ namespace LostArkAction.Code
             {
                 bool check = false;
 
-                check = isRandom ? Accs[p].Contain(inputAccVM, true) : false;
-
-                if (check&& isRandom)
+                check = isRandom ? Accs[p].Contain(inputAccVM, true) : false;//Accs[p].Contain(inputAccVM);
+                if (check)
                 {
                     if (Accs[p].Price >= inputAccVM.Price)
                     {
@@ -410,19 +411,18 @@ namespace LostArkAction.Code
                         {
                             if (Accs[p].Quality < inputAccVM.Quality)
                             {
-                                Accs[p] = inputAccVM;
+                                Accs[p] = new AccVM(inputAccVM);
                             }
                         }
                         else
                         {
-                            Accs[p] = inputAccVM;
+                            Accs[p] = new AccVM(inputAccVM);
                         }
                     }
-                    isSame = true;
-                    break;
+                    return true;
                 }
             }
-            return isSame;
+            return false;
         }
         public static long GetTime()
         {

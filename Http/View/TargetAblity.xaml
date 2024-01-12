@@ -27,7 +27,7 @@
                       IsEditable="True"
                       Text="{Binding DataContext.TargetAblityVM.SelectItem1,Mode=OneWayToSource}"
                       Style="{StaticResource ComboBoxTest2}"
-                      SelectedItem="{Binding  DataContext.TargetAblityVM.SelectItem1,Mode=OneWayToSource}"
+                      SelectedItem="{Binding  DataContext.TargetAblityVM.SelectItem1,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                       ItemsSource="{Binding DataContext.TargetAblityVM.Options1}"
                       command:CommandBehavior.Command="{Binding DataContext.TargetAblityVM.KeyBoardDownCommand}"
                       command:CommandBehavior.Event="PreviewKeyUp"

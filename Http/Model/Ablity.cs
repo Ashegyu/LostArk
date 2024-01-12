@@ -439,6 +439,11 @@ namespace LostArkAction.Model
                 }
                 Console.WriteLine();
             }
+            foreach (var tmp2 in AblityCombinationCases)
+            {
+                Console.WriteLine(tmp2.Key);
+
+            }
             Console.WriteLine("검색 개수 {0}", SearchAblities.Count);
 #endif
            HttpClient2.GetAsync(SearchAblities, Accesories);
@@ -638,14 +643,15 @@ namespace LostArkAction.Model
                                 {
                                     continue;
                                 }
-                                List<SearchAblity> tmep = new List<SearchAblity>();
-
-                                tmep.Add(tmpSearchAblities[i]);
-                                tmep.Add(tmpSearchAblities[j]);
-                                tmep.Add(tmpSearchAblities[k]);
-                                tmep.Add(tmpSearchAblities[o]);
-                                tmep.Add(tmpSearchAblities[c]);
-                                tmep= tmep.OrderBy(x => x.FirstAblity.Keys.ToList()[0]).ThenBy(x => x.SecondAblity.Keys.ToList()[0]).ToList(); ;
+                                List<SearchAblity> tmep = new List<SearchAblity>
+                                {
+                                    tmpSearchAblities[i],
+                                    tmpSearchAblities[j],
+                                    tmpSearchAblities[k],
+                                    tmpSearchAblities[o],
+                                    tmpSearchAblities[c]
+                                };
+                                tmep = tmep.OrderBy(x => x.FirstAblity.Keys.ToList()[0]).ThenBy(x => x.SecondAblity.Keys.ToList()[0]).ToList(); ;
                                 List<string> str = new List<string>();
                                 for (int n = 0; n < tmep.Count; n++)
                                 {
@@ -728,10 +734,7 @@ namespace LostArkAction.Model
                         strTmp += "3";
                         continue;
                     }
-                    
-                    
-                        strTmp += perAccs[i][k];
-                    
+                    strTmp += perAccs[i][k];
                 }
                 if (sameIndex.ContainsKey(strTmp))
                 {
@@ -740,6 +743,7 @@ namespace LostArkAction.Model
                 else
                 {
                     sameIndex.Add(strTmp, i);
+                    Console.WriteLine(strTmp);
                 }
             }
             for (int i = 0; i < Accs.Count; i++)
@@ -747,12 +751,16 @@ namespace LostArkAction.Model
                 tmpAccs.Add(Accs[i]);
             }
             TotalValue = (uint)(AblityCombinationCases.Count * sameIndex.Count) ;
-            
+            Console.WriteLine(TotalValue.ToString());
+            Console.WriteLine(sameIndex.Count.ToString());
+            int maxGold = int.MaxValue;
+            int maxCount = 0;
             foreach (var cases in AblityCombinationCases)
             {
                 for(int i = 0; i < sameIndex.Count; i++)
                 {
                     int index = sameIndex.Values.ToList()[i];
+                    bool isEmpty = false;
                     for (int k = 0; k < 5; k++)
                     {
                         tmpAccs[perAccs[index][k]] = Accs[perAccs[index][k]].Where((x => {
@@ -761,34 +769,46 @@ namespace LostArkAction.Model
                             {
                                 name = "random";
                             }
+                            if (PanaltyItems.Keys.ToList()[0] == x.PenaltyName)
+                            {
+                                if(PanaltyItems[PanaltyItems.Keys.ToList()[0]]+x.PenaltyValue>=5) return false;
+                            }
                             return (x.Name1 == cases.Value[k].FirstAblity.Keys.ToList()[0] &&
                                                                                     x.Value1 == cases.Value[k].FirstAblity.Values.ToList()[0] &&
                                                                                      name == cases.Value[k].SecondAblity.Keys.ToList()[0] &&
                                                                                     x.Value2 == cases.Value[k].SecondAblity.Values.ToList()[0]); }
                         )).ToList();
                         tmpAccs[perAccs[index][k]] = tmpAccs[perAccs[index][k]].OrderBy(x=>x.Price).ToList();
+                        if (tmpAccs[perAccs[index][k]].Count == 0)
+                        {
+                            isEmpty = true;
+
+                            break ;
+                        }
                     }
+                    if (isEmpty) continue;
                     int[] idx = { 0, 0, 0, 0, 0 };
                     for (idx[0]=0;idx[0] < tmpAccs[0].Count;idx[0]++)
                     {
                         int numOfAncient = 0;
+                        int gold = tmpAccs[0][idx[0]].Price;
                         Dictionary<string, int> panaltyCheck = new Dictionary<string, int> { { "공격력 감소", 0 }, { "공격속도 감소", 0 }, { "방어력 감소", 0 }, { "이동속도 감소", 0 } };
                         panaltyCheck[PanaltyItems.Keys.ToList()[0]] += PanaltyItems[PanaltyItems.Keys.ToList()[0]];
                         panaltyCheck[tmpAccs[0][idx[0]].PenaltyName] += tmpAccs[0][idx[0]].PenaltyValue;
-                        if (panaltyCheck[tmpAccs[0][idx[0]].PenaltyName] >= 5)
+                        if (panaltyCheck[tmpAccs[0][idx[0]].PenaltyName] >= 5 || (gold >= maxGold&& maxCount>30))
                         {
                             continue;
                         }
-                        if (!tmpAccs[0][idx[0]].isRelic) numOfAncient++;
                         for (idx[1] = 0; idx[1] < tmpAccs[1].Count; idx[1]++)
                         {
+                            gold += tmpAccs[1][idx[1]].Price;
                             panaltyCheck[tmpAccs[1][idx[1]].PenaltyName] += tmpAccs[1][idx[1]].PenaltyValue;
-                            if (panaltyCheck[tmpAccs[1][idx[1]].PenaltyName] >= 5)
+                            if (panaltyCheck[tmpAccs[1][idx[1]].PenaltyName] >= 5|| (gold >= maxGold && maxCount > 30))
                             {
                                 panaltyCheck[tmpAccs[1][idx[1]].PenaltyName] -= tmpAccs[1][idx[1]].PenaltyValue;
+                                gold -= tmpAccs[1][idx[1]].Price;
                                 continue;
                             }
-                            if (!tmpAccs[1][idx[1]].isRelic) numOfAncient++;
                            
                             for (idx[2] = 0; idx[2] < tmpAccs[2].Count; idx[2]++)
                             {
@@ -799,23 +819,29 @@ namespace LostArkAction.Model
                                         continue;
                                     }
                                 }
+                                gold += tmpAccs[2][idx[2]].Price;
+
                                 panaltyCheck[tmpAccs[2][idx[2]].PenaltyName] += tmpAccs[2][idx[2]].PenaltyValue;
-                                if (panaltyCheck[tmpAccs[2][idx[2]].PenaltyName] >= 5)
+                                if (panaltyCheck[tmpAccs[2][idx[2]].PenaltyName] >= 5 || (gold >= maxGold && maxCount > 30))
                                 {
                                     panaltyCheck[tmpAccs[2][idx[2]].PenaltyName] -= tmpAccs[2][idx[2]].PenaltyValue;
+                                    gold -= tmpAccs[2][idx[2]].Price;
+
                                     continue;
                                 }
-                                if (!tmpAccs[2][idx[2]].isRelic) numOfAncient++;
 
                                 for (idx[3] = 0; idx[3] < tmpAccs[3].Count; idx[3]++)
                                 {
+                                    gold += tmpAccs[3][idx[3]].Price;
+
                                     panaltyCheck[tmpAccs[3][idx[3]].PenaltyName] += tmpAccs[3][idx[3]].PenaltyValue;
-                                    if (panaltyCheck[tmpAccs[3][idx[3]].PenaltyName] >= 5)
+                                    if (panaltyCheck[tmpAccs[3][idx[3]].PenaltyName] >= 5 || (gold >= maxGold && maxCount > 30))
                                     {
                                         panaltyCheck[tmpAccs[3][idx[3]].PenaltyName] -= tmpAccs[3][idx[3]].PenaltyValue;
+                                        gold -= tmpAccs[3][idx[3]].Price;
+
                                         continue;
                                     }
-                                    if (!tmpAccs[3][idx[3]].isRelic) numOfAncient++;
 
                                     for (idx[4] = 0; idx[4] < tmpAccs[4].Count; idx[4]++)
                                     {
@@ -826,16 +852,26 @@ namespace LostArkAction.Model
                                                 continue;
                                             }
                                         }
+                                        gold += tmpAccs[4][idx[4]].Price;
+
                                         panaltyCheck[tmpAccs[4][idx[4]].PenaltyName] += tmpAccs[4][idx[4]].PenaltyValue;
-                                        if (panaltyCheck[tmpAccs[4][idx[4]].PenaltyName] >= 5)
+                                        if (panaltyCheck[tmpAccs[4][idx[4]].PenaltyName] >= 5 || (gold >= maxGold && maxCount > 30))
                                         {
                                             panaltyCheck[tmpAccs[4][idx[4]].PenaltyName] -= tmpAccs[4][idx[4]].PenaltyValue;
+                                            gold -= tmpAccs[4][idx[4]].Price;
+
                                             continue;
                                         }
+                                        if (!tmpAccs[0][idx[0]].isRelic) numOfAncient++;
+                                        if (!tmpAccs[1][idx[1]].isRelic) numOfAncient++;
+                                        if (!tmpAccs[2][idx[2]].isRelic) numOfAncient++;
+                                        if (!tmpAccs[3][idx[3]].isRelic) numOfAncient++;
                                         if (!tmpAccs[4][idx[4]].isRelic) numOfAncient++;
                                         if(MainWinodwVM.IsCheckedAll && (MainWinodwVM.MinimumAncient> numOfAncient||MainWinodwVM.MaximumOfAncient< numOfAncient))
                                         {
                                             panaltyCheck[tmpAccs[4][idx[4]].PenaltyName] -= tmpAccs[4][idx[4]].PenaltyValue;
+                                            gold -= tmpAccs[4][idx[4]].Price;
+
                                             if (!tmpAccs[4][idx[4]].isRelic) numOfAncient--;
                                             continue;
                                         }
@@ -886,26 +922,42 @@ namespace LostArkAction.Model
                                                 EquipChar = MainWinodwVM.EquipStr,
                                                 EquipChar2 = MainWinodwVM.EquipStr2,
 
-                                                TotalPrice = tmpAccs[0][idx[0]].Price + tmpAccs[1][idx[1]].Price + tmpAccs[2][idx[2]].Price + tmpAccs[3][idx[3]].Price + tmpAccs[4][idx[4]].Price
+                                                TotalPrice = gold
                                             };
+                                            maxCount++;
 
-                                            MainWinodwVM.FindAccVMs.Add(findAcc);
-                                        }
-                                        
+                                            if (maxCount >= 30)
+                                            {
+                                                MainWinodwVM.FindAccVMs = MainWinodwVM.FindAccVMs.OrderBy(x => x.TotalPrice).ToList();
+                                                maxGold = MainWinodwVM.FindAccVMs[MainWinodwVM.FindAccVMs.Count - 1].TotalPrice;
+                                                if (gold < maxGold)
+                                                {
+                                                    MainWinodwVM.FindAccVMs.RemoveAt(MainWinodwVM.FindAccVMs.Count - 1);
+                                                    MainWinodwVM.FindAccVMs.Add(findAcc);
+
+                                                }
+
+                                            }
+                                            else
+                                            {
+
+                                                MainWinodwVM.FindAccVMs.Add(findAcc);
+                                            }
+                                        }   
                                         panaltyCheck[tmpAccs[4][idx[4]].PenaltyName] -= tmpAccs[4][idx[4]].PenaltyValue;
-                                        if (!tmpAccs[4][idx[4]].isRelic) numOfAncient--;
+                                        gold -= tmpAccs[4][idx[4]].Price;
 
                                     }
                                     panaltyCheck[tmpAccs[3][idx[3]].PenaltyName] -= tmpAccs[3][idx[3]].PenaltyValue;
-                                    if (!tmpAccs[3][idx[3]].isRelic) numOfAncient--;
+                                    gold -= tmpAccs[3][idx[3]].Price;
 
                                 }
                                 panaltyCheck[tmpAccs[2][idx[2]].PenaltyName] -= tmpAccs[2][idx[2]].PenaltyValue;
-                                if (!tmpAccs[2][idx[2]].isRelic) numOfAncient--;
+                                gold -= tmpAccs[2][idx[2]].Price;
 
                             }
                             panaltyCheck[tmpAccs[1][idx[1]].PenaltyName] -= tmpAccs[1][idx[1]].PenaltyValue;
-                            if (!tmpAccs[1][idx[1]].isRelic) numOfAncient--;
+                            gold -= tmpAccs[1][idx[1]].Price;
 
                         }
                     }
